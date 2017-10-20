@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'maven'
+apply plugin: 'checkstyle'
+apply plugin: 'pmd'
+apply plugin: 'findbugs'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+group = 'org.dustinl'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.asynchttpclient:async-http-client:2.0.37'
+    compile 'com.google.guava:guava:23.0'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testCompile 'cglib:cglib-nodep:3.2.5'
+    testCompile 'org.objenesis:objenesis:2.6'
+
+}
+
+test {
+    dependsOn cleanTest
+    testLogging {
+        events "FAILED", "SKIPPED"
+    }
+}
+
+pmd {
+    ruleSetConfig = resources.text.fromString(new URL('https://raw.githubusercontent.com/dustinliu/java_style/master/pmd.xml').getText())
+    consoleOutput = true
+}
+
+checkstyle {
+    showViolations = true
+    config = resources.text.fromString(new URL('https://raw.githubusercontent.com/dustinliu/java_style/master/checkstyle.xml').getText())
+}
+
+findbugs {
+    sourceSets = [sourceSets.main]
+}
